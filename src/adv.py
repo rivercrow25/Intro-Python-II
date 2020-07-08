@@ -1,24 +1,33 @@
 from room import Room
 from player import Player
+from item import Item
 # Declare all the rooms
+
+item = {
+    "bag": Item("bag", "a large bag you can wear on your back to hold things"),
+    "knife": Item("knife", "it's really sharp"),
+    "hat": Item("hat", "it's kinda funny looking"),
+    "flail": Item("flai", "a spiked ball connected to a handgrip by a chain, very heavy"),
+    "trophy": Item("trophy", "congratulations you've finished the mad gods dungeon heres your reward")
+}
 
 room = {
     'outside':  Room("Outside Cave Entrance",
-                     "North of you, the cave mount beckons"),
+                     "North of you, the cave mount beckons", [item["bag"]]),
 
     'foyer':    Room("Foyer", """Dim light filters in from the south. Dusty
-passages run north and east."""),
+passages run north and east.""", []),
 
     'overlook': Room("Grand Overlook", """A steep cliff appears before you, falling
 into the darkness. Ahead to the north, a light flickers in
-the distance, but there is no way across the chasm."""),
+the distance, but there is no way across the chasm.""", [item["flail"], item["hat"]]),
 
     'narrow':   Room("Narrow Passage", """The narrow passage bends here from west
-to north. The smell of gold permeates the air."""),
+to north. The smell of gold permeates the air.""", []),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
 chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+earlier adventurers. The only exit is to the south.""", [item["trophy"]]),
 }
 
 
@@ -59,32 +68,52 @@ while is_started:
     is_playing = True
     while is_playing:
         print("you're current location is %s" % (player.current_room.current))
-        action = input('what do you want to do? you can go to an area by typing n for north, s for south, e for east or w for west or you can type help for a description of the current room: ')
-        if str(action).lower() == 'help':
+        action = input('what do you want to do? you can go to an area by typing n for north, s for south, e for east or w for west or you can type help for a description of the current room: ').split(' ')
+        if str(action[0]).lower() == 'help':
             print(player.current_room.description)
-        elif str(action).lower() == 'n':
+        elif str(action[0]).lower() == 'n':
             if player.current_room.n_to:
                 player.current_room = player.current_room.n_to
                 pass
             else:
                 print('not a valid option, try again')
-        elif str(action).lower() == 'w':
+        elif str(action[0]).lower() == 'w':
             if player.current_room.w_to:
                 player.current_room = player.current_room.w_to
                 pass
             else:
                 print('not a valid option, try again')
-        elif str(action).lower() == 'e':
+        elif str(action[0]).lower() == 'e':
             if player.current_room.e_to:
                 player.current_room = player.current_room.e_to
                 pass
             else:
-                'not a valid option, try again'
-        elif str(action) == 's':
-            if len(player.current_room.s_to):
+                print('not a valid option, try again')
+        elif str(action[0]).lower() == 's':
+            if player.current_room.s_to:
                 player.current_room = player.current_room.s_to
                 pass
             else:
                 print('not a valid option, try again')
-        elif str(action).lower() == 'quit':
+        elif str(action[0]).lower() == 'quit':
             is_playing, is_started = False, False
+        elif str(action[0]).lower() == 'look':
+            if len(player.current_room.items) > 0:
+                for x in player.current_room.items:
+                    print('you can see a %s' % (x.name))
+                item_action = input(
+                    'would you like to take one of the items? type [get] [item name]: ').split(' ')
+                print(item_action)
+                print(player.current_room.items.name)
+                # if str(item_action[1]).lower() == player.current_room.items.index(item_action[1].lower()):
+                #     player.pick_up(
+                #         player.current_room.items.index(item_action[1]))
+                # elif str(item_action[1]).lower() == 'stop':
+                #     pass
+                # else:
+                #     print('not a valid option')
+            else:
+                print(
+                    'besides the door you just came in from there doesnt seem to be anything')
+        else:
+            print('not a valid option')
