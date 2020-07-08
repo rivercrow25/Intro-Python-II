@@ -1,5 +1,5 @@
 from room import Room
-
+from player import Player
 # Declare all the rooms
 
 room = {
@@ -49,3 +49,42 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+is_started = True
+is_playing = False
+while is_started:
+    player_name = input(
+        "welcome to the cave of the mad god! to start enter your name: ")
+    print('to quit at any time type quit when prompted for what to do')
+    player = Player(player_name, room['outside'])
+    is_playing = True
+    while is_playing:
+        print("you're current location is %s" % (player.current_room.current))
+        action = input('what do you want to do? you can go to an area by typing n for north, s for south, e for east or w for west or you can type help for a description of the current room: ')
+        if str(action).lower() == 'help':
+            print(player.current_room.description)
+        elif str(action).lower() == 'n':
+            if player.current_room.n_to:
+                player.current_room = player.current_room.n_to
+                pass
+            else:
+                print('not a valid option, try again')
+        elif str(action).lower() == 'w':
+            if player.current_room.w_to:
+                player.current_room = player.current_room.w_to
+                pass
+            else:
+                print('not a valid option, try again')
+        elif str(action).lower() == 'e':
+            if player.current_room.e_to:
+                player.current_room = player.current_room.e_to
+                pass
+            else:
+                'not a valid option, try again'
+        elif str(action) == 's':
+            if len(player.current_room.s_to):
+                player.current_room = player.current_room.s_to
+                pass
+            else:
+                print('not a valid option, try again')
+        elif str(action).lower() == 'quit':
+            is_playing, is_started = False, False
