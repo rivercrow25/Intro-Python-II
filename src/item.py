@@ -5,3 +5,6 @@ class Item():
 
     def describe(self):
         print('its a %s' % (self.description))
+
+    def __str__(self):
+        return "%s" % (self.name)
