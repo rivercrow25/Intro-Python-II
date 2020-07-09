@@ -7,7 +7,7 @@ item = {
     "bag": Item("bag", "a large bag you can wear on your back to hold things"),
     "knife": Item("knife", "it's really sharp"),
     "hat": Item("hat", "it's kinda funny looking"),
-    "flail": Item("flai", "a spiked ball connected to a handgrip by a chain, very heavy"),
+    "flail": Item("flail", "a spiked ball connected to a handgrip by a chain, very heavy"),
     "trophy": Item("trophy", "congratulations you've finished the mad gods dungeon heres your reward")
 }
 
@@ -26,8 +26,7 @@ the distance, but there is no way across the chasm."""),
 to north. The smell of gold permeates the air."""),
 
     'treasure': Room("Treasure Chamber", """You've found the long-lost treasure
-chamber! Sadly, it has already been completely emptied by
-earlier adventurers. The only exit is to the south."""),
+chamber! Sadly, a trophy stands high on a pedestal, claim your prize."""),
 }
 
 room['outside'].items[0] = item['bag']
@@ -41,6 +40,8 @@ room['foyer'].items.pop()
 
 room['treasure'].items[0] = item['trophy']
 room['treasure'].items.pop()
+
+room['narrow'].items = []
 
 # Link rooms together
 
@@ -76,12 +77,13 @@ while is_started:
         "welcome to the cave of the mad god! to start enter your name: ")
     print('to quit at any time type quit when prompted for what to do')
     print('type command to see the commands you can make')
+    print('you can go to an area by typing n, e, s, w or you can type help for a description of the current room')
     player = Player(player_name, room['outside'])
     is_playing = True
     while is_playing:
         print("you're current location is %s" % (player.current_room.current))
         action = input(
-            'what do you want to do? you can go to an area by typing n, e, s, w or you can type help for a description of the current room: ').split(' ')
+            'what do you want to do?: ').split(' ')
         if str(action[0]).lower() == 'help':
             print(player.current_room.description)
         elif str(action[0]).lower() == 'n':
@@ -89,13 +91,13 @@ while is_started:
                 player.current_room = player.current_room.n_to
                 pass
             else:
-                print('not a valid option, try again')
+                print('theres no passage')
         elif str(action[0]).lower() == 'w':
             if player.current_room.w_to:
                 player.current_room = player.current_room.w_to
                 pass
             else:
-                print('not a valid option, try again')
+                print('theres no passage')
         elif str(action[0]).lower() == 'e':
             if player.current_room.e_to:
                 player.current_room = player.current_room.e_to
@@ -107,7 +109,7 @@ while is_started:
                 player.current_room = player.current_room.s_to
                 pass
             else:
-                print('not a valid option, try again')
+                print('theres no passage')
         elif str(action[0]).lower() == 'quit':
             is_playing, is_started = False, False
         elif str(action[0]).lower() == 'look':
@@ -118,15 +120,18 @@ while is_started:
                     'would you like to take one of the items? type [get] [item name]: ').split(' ')
                 if str(item_action[1]).lower() == 'trophy':
                     player.pick_up(player.current_room.items[0])
+                    player.current_room.items[0].describe()
                     print('youve found the treasure! you win!')
                     is_playing, is_started = False, False
                 elif str(player.current_room.items[0]) == str(item_action[1]).lower():
                     player.inventory.append(player.current_room.items[0])
+                    player.current_room.items[0].describe()
                     player.current_room.items.remove(
                         player.current_room.items[0])
                 elif len(player.current_room.items) > 1:
                     if str(player.current_room.items[1] == item_action[1]):
                         player.pick_up(player.current_room.items[1])
+                        player.current_room.items[1].describe()
                     else:
                         pass
             else:
